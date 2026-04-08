@@ -1,0 +1,17 @@
+{
+  "selectionType": "cylindricalFace",
+  "cylinderDiameterMm": 40,
+  "availableLengthMm": 32,
+  "isExternalCandidate": true,
+  "isInternalCandidate": false,
+  "axisDirection": {
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "axisOrigin": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  }
+}

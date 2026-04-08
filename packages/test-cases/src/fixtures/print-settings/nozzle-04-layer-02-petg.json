@@ -1,0 +1,7 @@
+{
+  "materialFamily": "PETG",
+  "nozzleDiameterMm": 0.4,
+  "layerHeightMm": 0.2,
+  "lineWidthMm": 0.45,
+  "qualityPreset": "balanced"
+}

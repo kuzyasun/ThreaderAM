@@ -1,0 +1,10 @@
+{
+  "operationMode": "external",
+  "profileShape": "trapezoidal",
+  "majorDiameterMm": 40,
+  "pitchMm": 3,
+  "lengthMm": 22,
+  "handedness": "right",
+  "starts": 1,
+  "clearanceMode": "preset"
+}

@@ -1,0 +1,16 @@
+{
+  "profileDimensionsMm": {
+    "threadDepth": 1.559,
+    "crestWidth": 0.54,
+    "rootWidth": 0.66
+  },
+  "helixTurnCount": 7.33,
+  "layerSliceCount": 4,
+  "score": 92,
+  "issueCodes": [],
+  "recommendationCodes": [
+    "material.petg.clearance",
+    "preview.large-diameter",
+    "build.lead-in"
+  ]
+}

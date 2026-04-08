@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.angular/
+coverage/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+
+# Fusion host build artifacts
+apps/fusion-host/addin/resources/web-dist/*
+!apps/fusion-host/addin/resources/web-dist/.gitkeep
