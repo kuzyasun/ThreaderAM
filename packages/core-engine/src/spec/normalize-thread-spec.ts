@@ -8,8 +8,12 @@ import {
 } from "./defaults.js";
 
 export function normalizeThreadSpec(input: ThreadSpec): ThreadSpec {
+  const threadStandard = input.threadStandard ?? "custom";
+  const depthMode = threadStandard === "custom" ? input.depthMode ?? "auto" : "auto";
+
   return {
     ...input,
+    threadStandard,
     majorDiameterMm: toPositive(input.majorDiameterMm, 1),
     pitchMm: toPositive(input.pitchMm, 0.1),
     lengthMm: toPositive(input.lengthMm, 0.5),
@@ -23,11 +27,28 @@ export function normalizeThreadSpec(input: ThreadSpec): ThreadSpec {
       defaultRootFlatPercent(input.profileShape)
     ),
     flankAngleDeg: toPositive(input.flankAngleDeg, defaultFlankAngleDeg(input.profileShape)),
+    depthMode,
+    manualDepthMm:
+      threadStandard === "custom" && depthMode === "manual"
+        ? toPositive(input.manualDepthMm, defaultDerivedDepth(input))
+        : undefined,
     manualClearanceMm:
       input.clearanceMode === "manual"
         ? toPositive(input.manualClearanceMm, defaultManualClearanceMm())
         : undefined
   };
+}
+
+function defaultDerivedDepth(input: ThreadSpec): number {
+  switch (input.profileShape) {
+    case "triangular":
+      return toPositive(input.pitchMm, 0.1) * 0.613;
+    case "squareLike":
+      return toPositive(input.pitchMm, 0.1) * 0.44;
+    case "trapezoidal":
+    default:
+      return toPositive(input.pitchMm, 0.1) * 0.52;
+  }
 }
 
 function normalizePercent(value: number | undefined, fallback: number): number {

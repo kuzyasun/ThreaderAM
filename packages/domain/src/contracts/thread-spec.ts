@@ -1,11 +1,14 @@
 import type {
   ClearanceMode,
   Handedness,
+  ThreadDepthMode,
   ThreadOperationMode,
-  ThreadProfileShape
+  ThreadProfileShape,
+  ThreadStandard
 } from "../enums/index.js";
 
 export interface ThreadSpec {
+  threadStandard?: ThreadStandard;
   operationMode: ThreadOperationMode;
   profileShape: ThreadProfileShape;
   majorDiameterMm: number;
@@ -16,6 +19,8 @@ export interface ThreadSpec {
   crestFlatPercent?: number;
   rootFlatPercent?: number;
   flankAngleDeg?: number;
+  depthMode?: ThreadDepthMode;
+  manualDepthMm?: number;
   clearanceMode: ClearanceMode;
   manualClearanceMm?: number;
 }

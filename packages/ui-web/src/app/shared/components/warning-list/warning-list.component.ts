@@ -1,5 +1,7 @@
-import { Component, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import type { ValidationIssue } from "@threadkit/domain";
+
+import { UiI18nService } from "../../../core/services/ui-i18n.service";
 
 @Component({
   selector: "threadkit-warning-list",
@@ -7,22 +9,22 @@ import type { ValidationIssue } from "@threadkit/domain";
   template: `
     <section class="list-card">
       <header>
-        <h3>Warnings</h3>
+        <h3>{{ i18n.t("warnings.title") }}</h3>
         <span>{{ issues().length }}</span>
       </header>
 
       @if (issues().length === 0) {
-        <p class="empty">No active issues in this mock scenario.</p>
+        <p class="empty">{{ i18n.t("warnings.empty") }}</p>
       } @else {
         <ul>
           @for (issue of issues(); track issue.code + issue.message) {
             <li>
               <span class="pill" [class.warning]="issue.severity === 'warning'" [class.error]="issue.severity === 'error'">
-                {{ issue.severity }}
+                {{ i18n.severityLabel(issue.severity) }}
               </span>
               <div>
-                <strong>{{ issue.field || issue.code }}</strong>
-                <p>{{ issue.message }}</p>
+                <strong>{{ i18n.fieldLabel(issue.field, issue.code) }}</strong>
+                <p>{{ i18n.issueMessage(issue) }}</p>
               </div>
             </li>
           }
@@ -102,5 +104,6 @@ import type { ValidationIssue } from "@threadkit/domain";
   `]
 })
 export class WarningListComponent {
+  readonly i18n = inject(UiI18nService);
   readonly issues = input<ValidationIssue[]>([]);
 }

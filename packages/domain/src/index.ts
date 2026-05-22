@@ -1,3 +1,17 @@
+export type { BuildPlan } from "./contracts/build-plan.js";
+export type { HostSelectionContext } from "./contracts/host-selection-context.js";
+export type { MessageEnvelope } from "./contracts/message-envelope.js";
+export type { PreviewRequest } from "./contracts/preview-request.js";
+export type { PreviewResult } from "./contracts/preview-result.js";
+export type { PrintSettings } from "./contracts/print-settings.js";
+export type { Recommendation } from "./contracts/recommendation.js";
+export type { ThreadSpec } from "./contracts/thread-spec.js";
+export type { ValidationIssue } from "./contracts/validation-issue.js";
+export type { IssueSeverity } from "./enums/issue-severity.js";
+export type { RecommendationPriority } from "./enums/recommendation-priority.js";
+export type { SelectionType } from "./enums/selection-type.js";
+export type { ThreadDepthMode } from "./enums/thread-depth-mode.js";
+export type { ThreadStandard } from "./enums/thread-standard.js";
 export * from "./contracts/index.js";
 export * from "./enums/index.js";
 export * from "./messaging/index.js";

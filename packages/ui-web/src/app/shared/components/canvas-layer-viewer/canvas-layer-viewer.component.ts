@@ -1,5 +1,7 @@
-import { Component, computed, input } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import type { LayerSlicePreview } from "@threadkit/domain";
+
+import { UiI18nService } from "../../../core/services/ui-i18n.service";
 
 @Component({
   selector: "threadkit-canvas-layer-viewer",
@@ -7,7 +9,7 @@ import type { LayerSlicePreview } from "@threadkit/domain";
   template: `
     <figure class="viewer">
       @if (rows().length > 0) {
-        <svg [attr.viewBox]="'0 0 260 ' + viewHeight()" role="img" aria-label="Layer slice preview">
+        <svg [attr.viewBox]="'0 0 260 ' + viewHeight()" role="img" [attr.aria-label]="i18n.t('viewer.layer.aria')">
           @for (row of rows(); track row.index) {
             <g [attr.transform]="'translate(0,' + row.offsetY + ')'">
               <text x="8" y="18" fill="#5a6f88" font-size="11">{{ row.label }}</text>
@@ -26,7 +28,7 @@ import type { LayerSlicePreview } from "@threadkit/domain";
           }
         </svg>
       } @else {
-        <div class="empty">Layer preview will appear here.</div>
+        <div class="empty">{{ i18n.t("viewer.layer.empty") }}</div>
       }
     </figure>
   `,
@@ -54,6 +56,7 @@ import type { LayerSlicePreview } from "@threadkit/domain";
   `]
 })
 export class CanvasLayerViewerComponent {
+  readonly i18n = inject(UiI18nService);
   readonly slices = input<LayerSlicePreview[]>([]);
 
   readonly rows = computed(() => {
@@ -77,7 +80,7 @@ export class CanvasLayerViewerComponent {
 
     return slices.map((slice, index) => ({
       index: slice.index,
-      label: `Layer ${slice.index + 1} · z ${slice.zMm.toFixed(2)} mm`,
+      label: this.i18n.formatLayerLabel(slice.index, slice.zMm),
       offsetY: index * 44,
       segments: slice.segments.map((segment) => ({
         x1: 74 + ((segment.start.x - minX) / width) * 164,

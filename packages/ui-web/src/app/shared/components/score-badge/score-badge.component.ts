@@ -1,11 +1,13 @@
-import { Component, computed, input } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
+
+import { UiI18nService } from "../../../core/services/ui-i18n.service";
 
 @Component({
   selector: "threadkit-score-badge",
   standalone: true,
   template: `
     <div class="badge" [class.good]="tone() === 'good'" [class.warn]="tone() === 'warn'" [class.risk]="tone() === 'risk'">
-      <span class="label">Mock quality</span>
+      <span class="label">{{ i18n.t("score.label") }}</span>
       <strong>{{ score() }}</strong>
     </div>
   `,
@@ -46,6 +48,7 @@ import { Component, computed, input } from "@angular/core";
   `]
 })
 export class ScoreBadgeComponent {
+  readonly i18n = inject(UiI18nService);
   readonly score = input(0);
 
   readonly tone = computed(() => {

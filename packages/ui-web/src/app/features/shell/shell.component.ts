@@ -1,6 +1,7 @@
 import { Component, inject } from "@angular/core";
 
 import { MockThreadkitStateService } from "../../core/services/mock-threadkit-state.service";
+import { UiI18nService, type UiLocale } from "../../core/services/ui-i18n.service";
 import { PreviewPanelComponent } from "../preview-panel/preview-panel.component";
 import { SelectionPanelComponent } from "../selection-panel/selection-panel.component";
 import { ThreadEditorComponent } from "../thread-editor/thread-editor.component";
@@ -13,35 +14,43 @@ import { ThreadEditorComponent } from "../thread-editor/thread-editor.component"
     <main class="shell">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">ThreadKit MVP - P9</p>
-          <h1>Bridge-aware palette shell</h1>
-          <p class="lede">
-            The UI now keeps a live handshake with the Fusion host, surfaces recent config
-            state, and stays useful in browser fallback mode while the add-in hardens.
-          </p>
+          <p class="eyebrow">{{ i18n.t("shell.eyebrow") }}</p>
+          <h1>{{ i18n.t("shell.title") }}</h1>
+          <p class="lede">{{ i18n.t("shell.lede") }}</p>
 
           <div class="hero-actions">
+            <label class="locale-picker">
+              <span>{{ i18n.t("shell.language") }}</span>
+              <select [value]="i18n.locale()" (change)="setLocale($any($event.target).value)">
+                @for (locale of locales; track locale) {
+                  <option [value]="locale">{{ i18n.localeLabel(locale) }}</option>
+                }
+              </select>
+            </label>
+
             <button type="button" class="action-button primary" (click)="saveRecentConfig()">
-              Save current
+              {{ i18n.t("shell.saveCurrent") }}
             </button>
             <button type="button" class="action-button" (click)="loadRecentConfig()">
-              Load recent
+              {{ i18n.t("shell.loadRecent") }}
             </button>
           </div>
 
           <div class="status-row">
             <span class="status-pill">
-              Host: {{ state.hostStatus()?.host ?? "disconnected" }}
+              {{ i18n.t("shell.host") }}:
+              {{ state.hostStatus()?.host ?? i18n.t("shell.hostDisconnected") }}
             </span>
             <span class="status-pill">
-              Status: {{ state.hostStatus()?.status ?? "pending" }}
+              {{ i18n.t("shell.status") }}:
+              {{ state.hostStatus()?.status ?? i18n.t("shell.hostPending") }}
             </span>
             <span class="status-pill" [class.status-pill--active]="state.recentConfigMeta().hasConfig">
-              Recent config:
+              {{ i18n.t("shell.recentConfig") }}:
               {{
                 state.recentConfigMeta().hasConfig
-                  ? "saved " + formatSavedAt(state.recentConfigMeta().savedAt)
-                  : "none"
+                  ? i18n.t("shell.recentConfigSaved", { value: formatSavedAt(state.recentConfigMeta().savedAt) })
+                  : i18n.t("shell.recentConfigNone")
               }}
             </span>
           </div>
@@ -49,15 +58,15 @@ import { ThreadEditorComponent } from "../thread-editor/thread-editor.component"
 
         <div class="hero-stats">
           <article>
-            <span>Quality score</span>
+            <span>{{ i18n.t("shell.qualityScore") }}</span>
             <strong>{{ state.summary().score }}</strong>
           </article>
           <article>
-            <span>Warnings</span>
+            <span>{{ i18n.t("shell.warnings") }}</span>
             <strong>{{ state.summary().issueCount }}</strong>
           </article>
           <article>
-            <span>Recommendations</span>
+            <span>{{ i18n.t("shell.recommendations") }}</span>
             <strong>{{ state.summary().recommendationCount }}</strong>
           </article>
         </div>
@@ -139,6 +148,25 @@ import { ThreadEditorComponent } from "../thread-editor/thread-editor.component"
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
+      align-items: end;
+    }
+
+    .locale-picker {
+      display: grid;
+      gap: 6px;
+      color: var(--tk-text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .locale-picker select {
+      min-width: 152px;
+      padding: 10px 12px;
+      border: 1px solid rgba(55, 77, 102, 0.14);
+      border-radius: 12px;
+      background: var(--tk-surface-strong);
+      color: #122033;
+      font: inherit;
     }
 
     .action-button {
@@ -244,7 +272,9 @@ import { ThreadEditorComponent } from "../thread-editor/thread-editor.component"
   `]
 })
 export class ShellComponent {
+  readonly i18n = inject(UiI18nService);
   readonly state = inject(MockThreadkitStateService);
+  readonly locales: UiLocale[] = ["uk", "en"];
 
   constructor() {
     void this.initializeBridge();
@@ -266,17 +296,23 @@ export class ShellComponent {
     }
   }
 
+  setLocale(locale: string): void {
+    if (locale === "uk" || locale === "en") {
+      this.i18n.setLocale(locale);
+    }
+  }
+
   formatSavedAt(savedAt: string | null | undefined): string {
     if (!savedAt) {
-      return "just now";
+      return this.i18n.t("shell.justNow");
     }
 
     const parsed = new Date(savedAt);
     if (Number.isNaN(parsed.getTime())) {
-      return "recently";
+      return this.i18n.t("shell.recently");
     }
 
-    return parsed.toLocaleString();
+    return parsed.toLocaleString(this.i18n.locale() === "uk" ? "uk-UA" : "en-US");
   }
 
   private async initializeBridge(): Promise<void> {

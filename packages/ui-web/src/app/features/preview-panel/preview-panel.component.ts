@@ -1,7 +1,8 @@
 import { DecimalPipe } from "@angular/common";
-import { Component, input, output } from "@angular/core";
+import { Component, inject, input, output } from "@angular/core";
 import type { PreviewMode, PreviewResult } from "@threadkit/domain";
 
+import { UiI18nService } from "../../core/services/ui-i18n.service";
 import { CanvasLayerViewerComponent } from "../../shared/components/canvas-layer-viewer/canvas-layer-viewer.component";
 import { RecommendationListComponent } from "../../shared/components/recommendation-list/recommendation-list.component";
 import { ScoreBadgeComponent } from "../../shared/components/score-badge/score-badge.component";
@@ -23,16 +24,16 @@ import { WarningListComponent } from "../../shared/components/warning-list/warni
     <section class="panel">
       <header>
         <div>
-          <p class="eyebrow">Mock preview</p>
-          <h2>Preview and guidance</h2>
+          <p class="eyebrow">{{ i18n.t("preview.eyebrow") }}</p>
+          <h2>{{ i18n.t("preview.title") }}</h2>
         </div>
         <threadkit-score-badge [score]="preview().score ?? 0" />
       </header>
 
-      <nav class="tabs" aria-label="Preview mode">
+      <nav class="tabs" [attr.aria-label]="i18n.t('preview.title')">
         @for (tab of tabs; track tab.mode) {
           <button type="button" [class.active]="previewMode() === tab.mode" (click)="previewModeChange.emit(tab.mode)">
-            {{ tab.label }}
+            {{ i18n.t(tab.labelKey) }}
           </button>
         }
       </nav>
@@ -44,15 +45,15 @@ import { WarningListComponent } from "../../shared/components/warning-list/warni
             @if (preview().profile2d?.dimensionsMm; as dimensions) {
               <dl class="metrics">
                 <div>
-                  <dt>Depth</dt>
+                  <dt>{{ i18n.t("preview.metrics.depth") }}</dt>
                   <dd>{{ dimensions.threadDepth | number: "1.2-2" }} mm</dd>
                 </div>
                 <div>
-                  <dt>Crest</dt>
+                  <dt>{{ i18n.t("preview.metrics.crest") }}</dt>
                   <dd>{{ dimensions.crestWidth | number: "1.2-2" }} mm</dd>
                 </div>
                 <div>
-                  <dt>Root</dt>
+                  <dt>{{ i18n.t("preview.metrics.root") }}</dt>
                   <dd>{{ dimensions.rootWidth | number: "1.2-2" }} mm</dd>
                 </div>
               </dl>
@@ -62,15 +63,15 @@ import { WarningListComponent } from "../../shared/components/warning-list/warni
           @case ("helix") {
             <div class="helix-grid">
               <div class="stat">
-                <span>Turns</span>
+                <span>{{ i18n.t("preview.helix.turns") }}</span>
                 <strong>{{ preview().helix3d?.turnCount ?? 0 }}</strong>
               </div>
               <div class="stat">
-                <span>Samples</span>
+                <span>{{ i18n.t("preview.helix.samples") }}</span>
                 <strong>{{ preview().helix3d?.pathPoints?.length ?? 0 }}</strong>
               </div>
               <div class="stat">
-                <span>End z</span>
+                <span>{{ i18n.t("preview.helix.endZ") }}</span>
                 <strong>{{ (preview().helix3d?.pathPoints?.at(-1)?.z ?? 0) | number: "1.2-2" }} mm</strong>
               </div>
             </div>
@@ -210,13 +211,14 @@ import { WarningListComponent } from "../../shared/components/warning-list/warni
   `]
 })
 export class PreviewPanelComponent {
+  readonly i18n = inject(UiI18nService);
   readonly preview = input.required<PreviewResult>();
   readonly previewMode = input.required<PreviewMode>();
   readonly previewModeChange = output<PreviewMode>();
 
-  readonly tabs: Array<{ mode: PreviewMode; label: string }> = [
-    { mode: "profile", label: "Profile" },
-    { mode: "helix", label: "Helix" },
-    { mode: "layer", label: "Layer" }
+  readonly tabs: Array<{ mode: PreviewMode; labelKey: string }> = [
+    { mode: "profile", labelKey: "preview.mode.profile" },
+    { mode: "helix", labelKey: "preview.mode.helix" },
+    { mode: "layer", labelKey: "preview.mode.layer" }
   ];
 }

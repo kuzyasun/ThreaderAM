@@ -1,5 +1,7 @@
-import { Component, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import type { Recommendation } from "@threadkit/domain";
+
+import { UiI18nService } from "../../../core/services/ui-i18n.service";
 
 @Component({
   selector: "threadkit-recommendation-list",
@@ -7,20 +9,20 @@ import type { Recommendation } from "@threadkit/domain";
   template: `
     <section class="list-card">
       <header>
-        <h3>Recommendations</h3>
+        <h3>{{ i18n.t("recommendations.title") }}</h3>
         <span>{{ recommendations().length }}</span>
       </header>
 
       @if (recommendations().length === 0) {
-        <p class="empty">No recommendations yet.</p>
+        <p class="empty">{{ i18n.t("recommendations.empty") }}</p>
       } @else {
         <ul>
           @for (item of recommendations(); track item.code) {
             <li>
-              <span class="pill" [class.high]="item.priority === 'high'">{{ item.priority }}</span>
+              <span class="pill" [class.high]="item.priority === 'high'">{{ i18n.priorityLabel(item.priority) }}</span>
               <div>
-                <strong>{{ item.title }}</strong>
-                <p>{{ item.details }}</p>
+                <strong>{{ i18n.recommendationTitle(item) }}</strong>
+                <p>{{ i18n.recommendationDetails(item) }}</p>
               </div>
             </li>
           }
@@ -95,5 +97,6 @@ import type { Recommendation } from "@threadkit/domain";
   `]
 })
 export class RecommendationListComponent {
+  readonly i18n = inject(UiI18nService);
   readonly recommendations = input<Recommendation[]>([]);
 }

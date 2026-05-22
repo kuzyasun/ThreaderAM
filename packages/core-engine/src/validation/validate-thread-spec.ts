@@ -42,6 +42,19 @@ export function validateThreadSpec(input: ThreadSpec): ValidationIssue[] {
     });
   }
 
+  if (
+    (spec.threadStandard ?? "custom") === "custom" &&
+    (spec.depthMode ?? "auto") === "manual" &&
+    (spec.manualDepthMm ?? 0) <= 0
+  ) {
+    issues.push({
+      code: "thread.depth.invalid",
+      severity: "error",
+      field: "manualDepthMm",
+      message: "Manual thread depth must be greater than zero."
+    });
+  }
+
   if (spec.starts > 1) {
     issues.push({
       code: "thread.starts.unsupported",

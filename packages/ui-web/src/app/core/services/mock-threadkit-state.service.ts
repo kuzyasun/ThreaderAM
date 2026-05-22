@@ -26,6 +26,7 @@ export class MockThreadkitStateService {
   });
 
   readonly threadSpec = signal<ThreadSpec>({
+    threadStandard: "custom",
     operationMode: "external",
     profileShape: "trapezoidal",
     majorDiameterMm: 40,
@@ -36,6 +37,7 @@ export class MockThreadkitStateService {
     crestFlatPercent: 18,
     rootFlatPercent: 22,
     flankAngleDeg: 30,
+    depthMode: "auto",
     clearanceMode: "preset"
   });
 

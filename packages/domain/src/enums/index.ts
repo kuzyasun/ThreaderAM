@@ -10,3 +10,5 @@ export * from "./recommendation-priority.js";
 export * from "./selection-type.js";
 export * from "./thread-operation-mode.js";
 export * from "./thread-profile-shape.js";
+export * from "./thread-depth-mode.js";
+export * from "./thread-standard.js";

@@ -31,6 +31,37 @@ describe("core geometry", () => {
     expect(result.metrics.rootWidthMm).toBeCloseTo(0.66, 2);
   });
 
+  it("changes the profile outline when the profile shape changes", () => {
+    const triangular = buildThreadProfile({
+      ...threadSpec,
+      profileShape: "triangular"
+    });
+    const trapezoidal = buildThreadProfile({
+      ...threadSpec,
+      profileShape: "trapezoidal"
+    });
+    const squareLike = buildThreadProfile({
+      ...threadSpec,
+      profileShape: "squareLike"
+    });
+
+    expect(triangular.profilePoints).not.toEqual(trapezoidal.profilePoints);
+    expect(squareLike.profilePoints).not.toEqual(trapezoidal.profilePoints);
+    expect(triangular.profilePoints).toHaveLength(5);
+    expect(squareLike.metrics.rootWidthMm).toBeGreaterThan(trapezoidal.metrics.rootWidthMm);
+  });
+
+  it("respects a manual custom depth when it is within geometric limits", () => {
+    const result = buildThreadProfile({
+      ...threadSpec,
+      threadStandard: "custom",
+      depthMode: "manual",
+      manualDepthMm: 0.8
+    });
+
+    expect(result.metrics.threadDepthMm).toBeCloseTo(0.8, 2);
+  });
+
   it("samples a helix path across the requested length", () => {
     const points = sampleHelixPath({
       radiusMm: threadSpec.majorDiameterMm / 2,

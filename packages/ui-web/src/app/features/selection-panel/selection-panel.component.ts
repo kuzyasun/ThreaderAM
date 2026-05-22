@@ -1,5 +1,7 @@
-import { Component, input } from "@angular/core";
+import { Component, inject, input } from "@angular/core";
 import type { HostSelectionContext } from "@threadkit/domain";
+
+import { UiI18nService } from "../../core/services/ui-i18n.service";
 
 @Component({
   selector: "threadkit-selection-panel",
@@ -8,36 +10,36 @@ import type { HostSelectionContext } from "@threadkit/domain";
     <section class="panel">
       <header>
         <div>
-          <p class="eyebrow">Fusion selection</p>
-          <h2>Target context</h2>
+          <p class="eyebrow">{{ i18n.t("selection.eyebrow") }}</p>
+          <h2>{{ i18n.t("selection.title") }}</h2>
         </div>
-        <span class="type">{{ selection().selectionType }}</span>
+        <span class="type">{{ i18n.selectionTypeLabel(selection().selectionType) }}</span>
       </header>
 
       <dl class="stats">
         <div>
-          <dt>Diameter</dt>
-          <dd>{{ selection().cylinderDiameterMm ?? "n/a" }} mm</dd>
+          <dt>{{ i18n.t("selection.diameter") }}</dt>
+          <dd>{{ selection().cylinderDiameterMm ?? i18n.t("selection.na") }} mm</dd>
         </div>
         <div>
-          <dt>Length</dt>
-          <dd>{{ selection().availableLengthMm ?? "n/a" }} mm</dd>
+          <dt>{{ i18n.t("selection.length") }}</dt>
+          <dd>{{ selection().availableLengthMm ?? i18n.t("selection.na") }} mm</dd>
         </div>
         <div>
-          <dt>Axis</dt>
+          <dt>{{ i18n.t("selection.axis") }}</dt>
           <dd>
             @if (selection().axisDirection; as axis) {
               {{ axis.x }}, {{ axis.y }}, {{ axis.z }}
             } @else {
-              n/a
+              {{ i18n.t("selection.na") }}
             }
           </dd>
         </div>
       </dl>
 
       <div class="chips">
-        <span [class.active]="selection().isExternalCandidate">External candidate</span>
-        <span [class.active]="selection().isInternalCandidate">Internal candidate</span>
+        <span [class.active]="selection().isExternalCandidate">{{ i18n.t("selection.externalCandidate") }}</span>
+        <span [class.active]="selection().isInternalCandidate">{{ i18n.t("selection.internalCandidate") }}</span>
       </div>
     </section>
   `,
@@ -79,6 +81,7 @@ import type { HostSelectionContext } from "@threadkit/domain";
       color: var(--tk-accent);
       font-size: 0.78rem;
       font-weight: 700;
+      text-transform: capitalize;
     }
 
     .stats {
@@ -122,5 +125,6 @@ import type { HostSelectionContext } from "@threadkit/domain";
   `]
 })
 export class SelectionPanelComponent {
+  readonly i18n = inject(UiI18nService);
   readonly selection = input.required<HostSelectionContext>();
 }
